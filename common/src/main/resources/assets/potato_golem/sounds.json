@@ -1,0 +1,32 @@
+{
+  "step": {
+    "sounds": [
+      "potato_golem:step"
+    ]
+  },
+  "damage": {
+    "sounds": [
+      "potato_golem:damage"
+    ]
+  },
+  "attack": {
+    "sounds": [
+      "potato_golem:attack"
+    ]
+  },
+  "repair": {
+    "sounds": [
+      "potato_golem:repair"
+    ]
+  },
+  "death": {
+    "sounds": [
+      "potato_golem:death"
+    ]
+  },
+  "hurt": {
+    "sounds": [
+      "potato_golem:hurt"
+    ]
+  }
+}

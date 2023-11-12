@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "org.theplaceholder.potatogolem.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "minVersion": "0.8",
+  "mixins": [
+    "ItemEntityMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
