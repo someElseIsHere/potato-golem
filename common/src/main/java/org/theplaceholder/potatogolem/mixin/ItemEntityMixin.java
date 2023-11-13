@@ -26,7 +26,7 @@ public abstract class ItemEntityMixin extends Entity implements TraceableEntity 
 
     @Inject(method = "hurt", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/item/ItemEntity;discard()V"))
     public void onHurt(DamageSource damageSource, float f, CallbackInfoReturnable<Boolean> cir){
-        if (damageSource != this.damageSources().lightningBolt() && this.getItem().is(Items.POTATO))
+        if (damageSource != this.damageSources().lightningBolt() || !this.getItem().is(Items.POTATO))
             return;
         PotatoGolemEntity potatoGolemEntity = new PotatoGolemEntity(PotatoGolemMod.POTATO_GOLEM.get(), this.level());
         potatoGolemEntity.setPos(this.getX(), this.getY(), this.getZ());
