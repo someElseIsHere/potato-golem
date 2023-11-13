@@ -11,7 +11,7 @@ import org.theplaceholder.potatogolem.PotatoGolemEntity;
 import static org.theplaceholder.potatogolem.PotatoGolemMod.MOD_ID;
 
 public class PotatoGolemRenderer extends MobRenderer<PotatoGolemEntity, PotatoGolemModel<PotatoGolemEntity>> {
-    private static final ResourceLocation GOLEM_LOCATION = new ResourceLocation(MOD_ID, "textures/entity/" + MOD_ID + ".png");
+    private static final ResourceLocation GOLEM_LOCATION = new ResourceLocation(MOD_ID, "textures/" + MOD_ID + ".png");
 
     public PotatoGolemRenderer(EntityRendererProvider.Context context) {
         super(context, new PotatoGolemModel<>(context.bakeLayer(PotatoGolemModel.LAYER_LOCATION)), 0.7F);
