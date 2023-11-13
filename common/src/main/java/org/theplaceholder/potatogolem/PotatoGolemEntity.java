@@ -17,7 +17,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.*;
 import net.minecraft.world.entity.animal.IronGolem;
-import net.minecraft.world.entity.animal.horse.TraderLlama;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
@@ -90,7 +89,8 @@ public class PotatoGolemEntity extends IronGolem implements OwnableEntity {
 
         if (itemStack.is(Items.DIRT) && !isTamed()) {
             setOwnerUUID(player.getUUID());
-            itemStack.shrink(1);
+            if(!player.isCreative())
+                itemStack.shrink(1);
             spawnTamingParticles();
         }
 
