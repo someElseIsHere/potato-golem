@@ -12,7 +12,7 @@
   "contact": {},
 
   "license": "GNU GPL 3.0",
-  "icon": "icon.png",
+  "icon": "assets/potato_golem/icon.png",
 
   "environment": "*",
   "entrypoints": {

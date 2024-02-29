@@ -3,7 +3,6 @@ package org.theplaceholder.potatogolem.goal;
 import java.util.EnumSet;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.target.TargetGoal;
-import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import org.theplaceholder.potatogolem.PotatoGolemEntity;
 
 public class PotatoOwnerHurtByTargetGoal extends TargetGoal {
