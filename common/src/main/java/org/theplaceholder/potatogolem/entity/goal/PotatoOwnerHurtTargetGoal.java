@@ -1,8 +1,8 @@
-package org.theplaceholder.potatogolem.goal;
+package org.theplaceholder.potatogolem.entity.goal;
 
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.target.TargetGoal;
-import org.theplaceholder.potatogolem.PotatoGolemEntity;
+import org.theplaceholder.potatogolem.entity.PotatoGolemEntity;
 
 import java.util.EnumSet;
 
@@ -11,9 +11,9 @@ public class PotatoOwnerHurtTargetGoal extends TargetGoal {
     private LivingEntity ownerLastHurt;
     private int timestamp;
 
-    public PotatoOwnerHurtTargetGoal(PotatoGolemEntity tamableAnimal) {
-        super(tamableAnimal, false);
-        this.tameAnimal = tamableAnimal;
+    public PotatoOwnerHurtTargetGoal(PotatoGolemEntity entity) {
+        super(entity, false);
+        this.tameAnimal = entity;
         this.setFlags(EnumSet.of(Flag.TARGET));
     }
 

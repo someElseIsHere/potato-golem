@@ -1,4 +1,4 @@
-package org.theplaceholder.potatogolem.client;
+package org.theplaceholder.potatogolem.client.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -6,7 +6,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
-import org.theplaceholder.potatogolem.PotatoGolemEntity;
+import org.theplaceholder.potatogolem.entity.PotatoGolemEntity;
 
 import static org.theplaceholder.potatogolem.PotatoGolemMod.MOD_ID;
 
@@ -22,12 +22,12 @@ public class PotatoGolemRenderer extends MobRenderer<PotatoGolemEntity, PotatoGo
         return GOLEM_LOCATION;
     }
 
-    protected void setupRotations(PotatoGolemEntity ironGolem, PoseStack poseStack, float f, float g, float h) {
-        super.setupRotations(ironGolem, poseStack, f, g, h);
-        if (!((double)ironGolem.walkAnimation.speed() < 0.01)) {
-            float j = ironGolem.walkAnimation.position(h) + 6.0F;
-            float k = (Math.abs(j % 13.0F - 6.5F) - 3.25F) / 3.25F;
-            poseStack.mulPose(Axis.ZP.rotationDegrees(6.5F * k));
+    protected void setupRotations(PotatoGolemEntity entity, PoseStack stack, float x, float y, float z) {
+        super.setupRotations(entity, stack, x, y, z);
+        if (!(entity.walkAnimation.speed() < 0.01)) {
+            y = entity.walkAnimation.position(y) + 6.0F;
+            y = (Math.abs(y % 13.0F - 6.5F) - 3.25F) / 3.25F;
+            stack.mulPose(Axis.ZP.rotationDegrees(6.5F * y));
         }
     }
 }

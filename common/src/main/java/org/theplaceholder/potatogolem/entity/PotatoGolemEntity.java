@@ -1,4 +1,4 @@
-package org.theplaceholder.potatogolem;
+package org.theplaceholder.potatogolem.entity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
@@ -9,6 +9,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.players.OldUsersConverter;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -26,8 +27,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.theplaceholder.potatogolem.goal.PotatoOwnerHurtByTargetGoal;
-import org.theplaceholder.potatogolem.goal.PotatoOwnerHurtTargetGoal;
+import org.theplaceholder.potatogolem.PotatoGolemSounds;
+import org.theplaceholder.potatogolem.entity.goal.PotatoOwnerHurtByTargetGoal;
+import org.theplaceholder.potatogolem.entity.goal.PotatoOwnerHurtTargetGoal;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -35,8 +37,8 @@ import java.util.UUID;
 public class PotatoGolemEntity extends IronGolem implements OwnableEntity {
     protected static final EntityDataAccessor<Optional<UUID>> DATA_OWNERUUID_ID = SynchedEntityData.defineId(PotatoGolemEntity.class, EntityDataSerializers.OPTIONAL_UUID);;
 
-    public PotatoGolemEntity(EntityType<PotatoGolemEntity> entityType, Level level) {
-        super(entityType, level);
+    public PotatoGolemEntity(EntityType<PotatoGolemEntity> type, Level level) {
+        super(type, level);
     }
 
     @Override
@@ -45,13 +47,13 @@ public class PotatoGolemEntity extends IronGolem implements OwnableEntity {
     }
 
     @Override
-    public boolean hurt(DamageSource damageSource, float f) {
+    public boolean hurt(DamageSource source, float amount) {
         Crackiness crackiness = this.getCrackiness();
-        boolean bl = super.hurt(damageSource, f);
-        if (bl && this.getCrackiness() != crackiness) {
+        boolean result = super.hurt(source, amount);
+        if (result && this.getCrackiness() != crackiness) {
             this.playSound(PotatoGolemSounds.DAMAGE.get(), 1.0F, 1.0F);
         }
-        return bl;
+        return result;
     }
 
     @Override
@@ -64,48 +66,46 @@ public class PotatoGolemEntity extends IronGolem implements OwnableEntity {
     public boolean doHurtTarget(Entity entity) {
         this.attackAnimationTick = 17;
         this.level().broadcastEntityEvent(this, (byte)4);
-        float f = this.getAttackDamage();
-        float g = (int)f > 0 ? f / 2.0F + (float)this.random.nextInt((int)f) : f;
-        boolean bl = entity.hurt(this.damageSources().mobAttack(this), g);
-        if (bl) {
-            double d;
+        float damage = this.getAttackDamage();
+        damage = damage > 0 ? damage / 2.0F + this.random.nextInt((int) damage) : damage;
+        boolean result = entity.hurt(this.damageSources().mobAttack(this), damage);
+        if (result) {
+            double knockbackResistance = 0;
             if (entity instanceof LivingEntity livingEntity) {
-                d = livingEntity.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
-            } else {
-                d = 0.0;
+                knockbackResistance = livingEntity.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
             }
-            double e = Math.max(0.0, 1.0 - d);
-            entity.setDeltaMovement(entity.getDeltaMovement().add(0.0, 0.4000000059604645 * e, 0.0));
+            knockbackResistance = Math.max(0.0, 1.0 - knockbackResistance);
+            entity.setDeltaMovement(entity.getDeltaMovement().add(0.0, 0.4000000059604645 * knockbackResistance, 0.0));
             this.doEnchantDamageEffects(this, entity);
         }
 
         this.playSound(PotatoGolemSounds.ATTACK.get(), 1.0F, 1.0F);
-        return bl;
+        return result;
     }
 
     @Override
-    protected @NotNull InteractionResult mobInteract(Player player, InteractionHand interactionHand) {
-        ItemStack itemStack = player.getItemInHand(interactionHand);
+    protected @NotNull InteractionResult mobInteract(Player player, InteractionHand hand) {
+        ItemStack item = player.getItemInHand(hand);
 
-        if (itemStack.is(Items.DIRT) && !isTamed()) {
+        if (item.is(ItemTags.DIRT) && !isTamed()) {
             setOwnerUUID(player.getUUID());
             if(!player.isCreative())
-                itemStack.shrink(1);
+                item.shrink(1);
             spawnTamingParticles();
         }
 
-        if (!itemStack.is(Items.POTATO)) {
+        if (!item.is(Items.POISONOUS_POTATO)) {
             return InteractionResult.PASS;
         } else {
-            float f = this.getHealth();
+            float health = this.getHealth();
             this.heal(25.0F);
-            if (this.getHealth() == f) {
+            if (this.getHealth() == health) {
                 return InteractionResult.PASS;
             } else {
-                float g = 1.0F + (this.random.nextFloat() - this.random.nextFloat()) * 0.2F;
-                this.playSound(PotatoGolemSounds.REPAIR.get(), 1.0F, g);
+                float healthIncrease = 1.0F + (this.random.nextFloat() - this.random.nextFloat()) * 0.2F;
+                this.playSound(PotatoGolemSounds.REPAIR.get(), 1.0F, healthIncrease);
                 if (!player.getAbilities().instabuild) {
-                    itemStack.shrink(1);
+                    item.shrink(1);
                 }
 
                 return InteractionResult.sidedSuccess(this.level().isClientSide);
@@ -114,12 +114,12 @@ public class PotatoGolemEntity extends IronGolem implements OwnableEntity {
     }
 
     @Override
-    public void handleEntityEvent(byte b) {
-        if (b == 4) {
+    public void handleEntityEvent(byte data) {
+        if (data == 4) {
             this.attackAnimationTick = 17;
             this.playSound(PotatoGolemSounds.ATTACK.get(), 1.0F, 1.0F);
         } else {
-            super.handleEntityEvent(b);
+            super.handleEntityEvent(data);
         }
     }
 
@@ -136,17 +136,19 @@ public class PotatoGolemEntity extends IronGolem implements OwnableEntity {
     }
 
     @Override
+    @NotNull
     protected SoundEvent getDeathSound() {
         return PotatoGolemSounds.DEATH.get();
     }
 
     @Override
+    @NotNull
     protected SoundEvent getHurtSound(DamageSource damageSource) {
         return PotatoGolemSounds.HURT.get();
     }
 
-    @Nullable
     @Override
+    @Nullable
     public UUID getOwnerUUID() {
         return this.entityData.get(DATA_OWNERUUID_ID).orElse(null);
     }
