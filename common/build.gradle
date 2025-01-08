@@ -17,7 +17,3 @@ publishing {
 
     repositories {}
 }
-
-loom {
-    accessWidenerPath = file("src/main/resources/potato_golem.accesswidener")
-}

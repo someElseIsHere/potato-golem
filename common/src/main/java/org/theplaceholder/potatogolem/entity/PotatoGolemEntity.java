@@ -30,6 +30,7 @@ import org.jetbrains.annotations.Nullable;
 import org.theplaceholder.potatogolem.PotatoGolemSounds;
 import org.theplaceholder.potatogolem.entity.goal.PotatoOwnerHurtByTargetGoal;
 import org.theplaceholder.potatogolem.entity.goal.PotatoOwnerHurtTargetGoal;
+import org.theplaceholder.potatogolem.mixin.IronGolemAccessor;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -64,9 +65,9 @@ public class PotatoGolemEntity extends IronGolem implements OwnableEntity {
 
     @Override
     public boolean doHurtTarget(Entity entity) {
-        this.attackAnimationTick = 17;
+        ((IronGolemAccessor)this).setAttackAnimationTick(17);
         this.level().broadcastEntityEvent(this, (byte)4);
-        float damage = this.getAttackDamage();
+        float damage = ((IronGolemAccessor)this).invokeGetAttackDamage();
         damage = damage > 0 ? damage / 2.0F + this.random.nextInt((int) damage) : damage;
         boolean result = entity.hurt(this.damageSources().mobAttack(this), damage);
         if (result) {
@@ -116,7 +117,7 @@ public class PotatoGolemEntity extends IronGolem implements OwnableEntity {
     @Override
     public void handleEntityEvent(byte data) {
         if (data == 4) {
-            this.attackAnimationTick = 17;
+            ((IronGolemAccessor) this).setAttackAnimationTick(17);
             this.playSound(PotatoGolemSounds.ATTACK.get(), 1.0F, 1.0F);
         } else {
             super.handleEntityEvent(data);
