@@ -95,7 +95,7 @@ public class PotatoGolemEntity extends IronGolem implements OwnableEntity {
             spawnTamingParticles();
         }
 
-        if (!item.is(Items.POISONOUS_POTATO)) {
+        if (!item.is(Items.POISONOUS_POTATO) && !item.is(Items.POTATO)) {
             return InteractionResult.PASS;
         } else {
             float health = this.getHealth();
